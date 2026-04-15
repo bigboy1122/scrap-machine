@@ -1,0 +1,27 @@
+---
+description: When and how to use Cursor subagent types for Scrap Machine development
+alwaysApply: true
+---
+
+# Subagent Conventions
+
+Use Cursor's built-in subagent types via the Task tool. Pick the narrowest type for the job.
+
+## When to Use Each Type
+
+| Type | Use For | Example |
+|------|---------|---------|
+| `explore` | Codebase research, finding patterns, understanding APIs | "How does Phaser handle tilemaps?" |
+| `generalPurpose` | Implementing features against a spec | "Build the tile grid system from specs/tile-grid.md" |
+| `test-runner` | Running test suites, analyzing failures, coverage checks | "Run tests and fix any failures" |
+| `troubleshooter` | Debugging runtime errors, tracing stack traces | "The game crashes on scene transition" |
+| `browser-use` | Visual testing, screenshot verification, UI interaction | "Verify the HUD renders correctly at 1280x720" |
+| `shell` | Git operations, deployments, CLI tasks | "Push the build to Wavedash" |
+
+## Rules
+
+- Use `explore` (readonly) when you only need to read and understand — don't use `generalPurpose` for research
+- Launch multiple agents in parallel when tasks are independent (e.g. explore two different subsystems)
+- Always include the relevant spec file path in the prompt when implementing features
+- For browser testing, describe what success looks like visually so the agent can verify screenshots
+- Use `fast` model for quick lookups; default model for implementation work

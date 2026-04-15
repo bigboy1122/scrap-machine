@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/format.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/lint-check.sh",
+        "matcher": "Write"
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/block-secrets.sh",
+        "matcher": "\\.(env|secret|key|token|credential)",
+        "failClosed": true
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": ".cursor/hooks/test-reminder.sh",
+        "matcher": "Write"
+      }
+    ]
+  }
+}
