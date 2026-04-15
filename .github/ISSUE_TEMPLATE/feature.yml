@@ -1,0 +1,113 @@
+name: Feature Request
+description: Propose a new game feature or system
+title: "feat: "
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Request
+        Provide enough context that an AI agent can implement this without asking clarifying questions.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is this feature? One paragraph with full context.
+      placeholder: "Describe the feature, why it's needed, and how it fits into the game."
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-stories
+    attributes:
+      label: User Stories
+      description: Who benefits and how?
+      placeholder: |
+        - **As a** player, **I want** to claim neutral tiles by clicking, **so that** I can expand my territory.
+        - **As a** player, **I want** visual feedback when claiming a tile, **so that** I know my action succeeded.
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      description: Specific, testable requirements. Use checkboxes.
+      placeholder: |
+        - [ ] Requirement 1
+        - [ ] Requirement 2
+        - [ ] Requirement 3
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Conditions that must be true for this to be considered complete.
+      placeholder: |
+        - [ ] Player can click adjacent neutral tiles to claim them
+        - [ ] Claimed tiles change color to the player's color
+        - [ ] Resource cost is deducted on claim
+        - [ ] Server validates the claim is legal
+    validations:
+      required: true
+
+  - type: textarea
+    id: definition-of-done
+    attributes:
+      label: Definition of Done
+      description: Standard checklist for completion.
+      value: |
+        - [ ] Feature implemented and matches all acceptance criteria
+        - [ ] Unit tests written and passing (80%+ coverage on new code)
+        - [ ] Browser test covering the happy path
+        - [ ] No ESLint errors or warnings
+        - [ ] Logging added for key state transitions
+        - [ ] Code reviewed and merged to `main`
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical-context
+    attributes:
+      label: Technical Context
+      description: Files, systems, and architecture relevant to implementation. Include mermaid diagrams if helpful.
+      placeholder: |
+        **Affected files/systems:**
+        - `src/systems/resource-manager.ts`
+        - `src/scenes/GameScene.ts`
+
+        **Architecture diagram (if helpful):**
+        ```mermaid
+        flowchart LR
+            A[Player Click] --> B[Client Validation]
+            B --> C[Server Request]
+            C --> D[State Update]
+            D --> E[Broadcast]
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope Boundaries
+      description: What is explicitly in and out of scope?
+      placeholder: |
+        **In scope:** tile claiming, resource deduction, visual feedback
+        **Out of scope:** combat, upgrades, multiplayer sync (separate issue)
+    validations:
+      required: false
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Other issues, specs, or systems this depends on.
+      placeholder: |
+        - Depends on #NN (tile grid system)
+        - Depends on #NN (resource manager)
+    validations:
+      required: false

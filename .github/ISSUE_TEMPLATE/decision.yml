@@ -1,0 +1,62 @@
+name: Decision
+description: Document a technical or design decision that needs team input
+title: "DECIDE: "
+labels: ["decision"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Decision Required
+        Document the decision with enough context that any team member (human or AI) can understand the trade-offs and contribute.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What problem are we solving? What constraints exist? Why does this need a decision?
+      placeholder: "Describe the situation, constraints, and what we're optimizing for."
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: Options
+      description: List the options with pros/cons. Use a table for easy comparison.
+      placeholder: |
+        | Option | Pros | Cons | Prize Impact |
+        |--------|------|------|-------------|
+        | **Option A** | Pro 1, Pro 2 | Con 1 | None |
+        | **Option B** | Pro 1 | Con 1, Con 2 | Unlocks $X challenge |
+    validations:
+      required: true
+
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommendation
+      description: Which option do you recommend and why?
+      placeholder: "Option B because..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact & Dependencies
+      description: What does this decision affect? Other issues, architecture, timeline?
+      placeholder: |
+        - Blocks: #NN, #NN
+        - Affects: multiplayer architecture, deployment pipeline
+        - Timeline impact: adds ~2 days if we choose Option B
+    validations:
+      required: false
+
+  - type: input
+    id: deadline
+    attributes:
+      label: Decision Deadline
+      description: When must this be decided by?
+      placeholder: "YYYY-MM-DD or ASAP"
+    validations:
+      required: false

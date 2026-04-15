@@ -1,0 +1,84 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Bug Report
+        Provide enough context that an AI agent can reproduce and fix this without asking clarifying questions.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What's broken? One paragraph with full context.
+      placeholder: "Describe the bug, when it occurs, and its impact on gameplay."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Exact steps to trigger the bug.
+      placeholder: |
+        1. Open the game at localhost:5173
+        2. Click "Join Game"
+        3. Click on a neutral tile adjacent to your territory
+        4. Observe: tile does not change color
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen?
+      placeholder: "The tile should change to the player's color and resource count should decrease by the tile cost."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happens? Include error messages, console output, screenshots.
+      placeholder: "The tile remains neutral. Console shows: `TypeError: Cannot read property 'owner' of undefined` at `TileGrid.ts:142`."
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical-context
+    attributes:
+      label: Technical Context
+      description: Relevant files, logs, stack traces. Help the AI agent find the bug.
+      placeholder: |
+        **Relevant files:**
+        - `src/entities/TileGrid.ts` (line 142)
+        - `src/systems/resource-manager.ts`
+
+        **Console output:**
+        ```
+        [ERROR] TypeError: Cannot read property 'owner' of undefined
+            at TileGrid.claimTile (TileGrid.ts:142)
+            at GameScene.onPointerDown (GameScene.ts:87)
+        ```
+
+        **Browser:** Chrome 130, macOS
+    validations:
+      required: true
+
+  - type: textarea
+    id: definition-of-done
+    attributes:
+      label: Definition of Done
+      value: |
+        - [ ] Bug root cause identified
+        - [ ] Fix implemented
+        - [ ] Unit test added covering this case
+        - [ ] No regression in existing tests
+        - [ ] Verified in browser
+    validations:
+      required: true

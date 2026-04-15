@@ -1,0 +1,61 @@
+name: Task
+description: A general development task (chore, refactor, infra, etc.)
+title: "chore: "
+labels: ["task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Task
+        Describe the work with enough context for an AI agent to complete it autonomously.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What needs to be done and why?
+      placeholder: "Describe the task, its purpose, and any relevant background."
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      description: Specific deliverables. Use checkboxes.
+      placeholder: |
+        - [ ] Requirement 1
+        - [ ] Requirement 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical-context
+    attributes:
+      label: Technical Context
+      description: Files, systems, commands, or references needed to complete this.
+      placeholder: |
+        **Affected files:**
+        - `path/to/file.ts`
+
+        **Relevant docs:**
+        - [Link](https://example.com)
+
+        **Commands:**
+        ```bash
+        npm run build
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: definition-of-done
+    attributes:
+      label: Definition of Done
+      value: |
+        - [ ] Task completed as specified
+        - [ ] Tests pass
+        - [ ] No new lint errors
+        - [ ] Changes committed and pushed
+    validations:
+      required: true
