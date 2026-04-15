@@ -1,0 +1,61 @@
+---
+description: Testing standards — Vitest unit tests, Playwright browser tests, 80% coverage
+alwaysApply: true
+---
+
+# Testing Standards
+
+## Stack
+- **Unit/Integration**: Vitest (native Vite integration, fast, ESM-first)
+- **Browser/E2E**: Playwright (browser-based testing, visual verification)
+- **Coverage**: `@vitest/coverage-v8`, minimum **80%** lines + branches
+
+## Test Organization
+```
+src/
+  systems/
+    resource-manager.ts
+    resource-manager.test.ts    # colocated unit test
+  scenes/
+    BootScene.ts
+tests/
+  e2e/
+    game-flow.spec.ts           # Playwright browser tests
+```
+
+## Unit Test Rules
+- Colocate test files next to source: `foo.ts` → `foo.test.ts`
+- One `describe` block per function/class
+- Test names describe behavior: `it("returns zero when no tiles are owned")`
+- Use `beforeEach` for setup, never share mutable state across tests
+- Mock external dependencies (network, DOM), never mock the unit under test
+
+```typescript
+// ✅ GOOD — clear arrange/act/assert
+describe("ResourceManager", () => {
+  it("calculates income proportional to tile count", () => {
+    const manager = new ResourceManager();
+    manager.setTileCount(10);
+
+    const income = manager.calculateIncome();
+
+    expect(income).toBe(10 * BASE_INCOME_PER_TILE);
+  });
+});
+```
+
+## Browser Test Rules (Playwright)
+- Use for visual verification, game flow, and interaction testing
+- Tests run against the dev server (`npm run dev`)
+- Take screenshots at key states for regression checks
+- Keep browser tests focused — don't retest unit-level logic
+
+## Coverage Requirements
+- **80% minimum** on lines and branches — enforced in CI
+- New features must include tests; PRs that drop coverage are blocked
+- Game scenes may have lower unit coverage but must have browser test coverage
+
+## What NOT to Test
+- Phaser engine internals (trust the framework)
+- Pure config objects
+- Third-party library behavior

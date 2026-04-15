@@ -1,0 +1,55 @@
+---
+description: Structured logging with log levels and production toggle
+alwaysApply: true
+---
+
+# Logging Standards
+
+## Logger — Not console.log
+Never use `console.log` directly. Use the project logger at `@/utils/logger`.
+
+```typescript
+// ❌ BAD
+console.log("player joined", playerId);
+
+// ✅ GOOD
+import { logger } from "@/utils/logger";
+logger.info("Player joined", { playerId, roomId });
+```
+
+## Log Levels
+| Level | Use For | Production |
+|-------|---------|------------|
+| `error` | Unrecoverable failures, exceptions | ON |
+| `warn` | Recoverable issues, degraded state | ON |
+| `info` | Key lifecycle events (join, leave, round start) | ON |
+| `debug` | State changes, decision logic, flow tracing | OFF |
+| `trace` | Per-frame data, hot-path details | OFF |
+
+## Rules
+- Every log entry must include **structured context** (object, not string interpolation)
+- Never log PII (emails, IPs, real names) — use player IDs only
+- Log at function boundaries: entry with params, exit with result/duration
+- Performance-critical paths use `debug`/`trace` so they're silent in production
+- Include `{ system: "combat" }` or similar tags for filtering
+
+## Production Toggle
+The logger respects a `LOG_LEVEL` environment variable. Default: `info` in production, `debug` in development.
+
+```typescript
+// Logger implementation pattern
+export const logger = createLogger({
+  level: import.meta.env.PROD ? "info" : "debug",
+});
+```
+
+## What to Log
+- Game lifecycle: room created, player joined/left, round start/end
+- State transitions: territory claimed, border conflict resolved, player absorbed
+- Errors: with full context and stack traces
+- Performance: frame budget exceeded, network latency spikes (as `warn`)
+
+## What NOT to Log
+- Per-frame game loop ticks (unless `trace` level)
+- Redundant success messages for routine operations
+- Sensitive data (tokens, credentials, PII)

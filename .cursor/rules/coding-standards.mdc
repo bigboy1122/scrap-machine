@@ -1,0 +1,50 @@
+---
+description: Core coding standards — DRY, functional-first, quality gates
+alwaysApply: true
+---
+
+# Core Coding Standards
+
+## Principles (in priority order)
+1. **Functional correctness** over performance optimization
+2. **DRY** — extract shared logic into utilities; never duplicate > 3 lines
+3. **Single Responsibility** — one function/class does one thing
+4. **Explicit over implicit** — no magic; name things clearly
+5. **Fail fast** — validate inputs at boundaries, throw early
+
+## Naming
+- Files: `kebab-case.ts` for modules, `PascalCase.ts` for classes/scenes
+- Variables/functions: `camelCase`
+- Constants: `UPPER_SNAKE_CASE`
+- Types/interfaces: `PascalCase`, prefix interfaces with `I` only if ambiguous
+- Booleans: prefix with `is`, `has`, `can`, `should`
+
+## Functions
+- Max 30 lines per function; extract if longer
+- Max 3 parameters; use an options object beyond that
+- Pure functions preferred — minimize side effects
+- Always specify return types on exported functions
+
+## Error Handling
+- Never swallow errors silently
+- Use typed error classes for domain errors
+- Always log errors with context before re-throwing
+
+```typescript
+// ❌ BAD
+try { doThing(); } catch (e) {}
+
+// ✅ GOOD
+try {
+  doThing();
+} catch (error) {
+  logger.error("Failed to do thing", { error, context });
+  throw new GameError("Thing failed", { cause: error });
+}
+```
+
+## Code Quality Gates
+- **80% test coverage** minimum (lines + branches)
+- No `any` types without a `// eslint-disable` comment explaining why
+- No `console.log` — use the project logger (see logging rule)
+- No commented-out code in commits

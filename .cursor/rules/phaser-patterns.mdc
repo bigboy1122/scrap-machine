@@ -1,0 +1,61 @@
+---
+description: Phaser 3 game development patterns and conventions
+globs: "**/*.ts"
+alwaysApply: false
+---
+
+# Phaser 3 Patterns
+
+## Scene Lifecycle
+Follow Phaser's standard scene methods — don't reinvent the wheel:
+- `init(data)` — receive data from previous scene
+- `preload()` — load assets (sprites, audio, tilemaps)
+- `create()` — set up game objects, physics, input handlers
+- `update(time, delta)` — game loop, keep lightweight
+
+## Scene Organization
+- One scene per file: `MenuScene.ts`, `GameScene.ts`, `HUDScene.ts`
+- Scenes own their display objects; shared state goes in a registry or manager
+- Use `this.scene.launch()` for parallel scenes (e.g. HUD overlay)
+- Pass data between scenes via `this.scene.start("Next", { data })`
+
+## Game Objects
+- Extend `Phaser.GameObjects.*` for custom entities, not raw classes
+- Use object pools (`this.add.group()`) for frequently spawned objects (particles, tiles)
+- Prefer `setOrigin(0.5)` for center-anchored objects
+
+## Input
+- Use Phaser's input system, not raw DOM events
+- `this.input.on("pointerdown", handler)` for click/tap
+- Clean up listeners in `shutdown()` to prevent leaks
+
+## Asset Loading
+- Load assets in a dedicated `PreloadScene`, not scattered across scenes
+- Use texture atlases over individual sprites when possible
+- Audio: load multiple formats for cross-browser (mp3 + ogg)
+
+## Common Patterns
+
+```typescript
+// ✅ Object pool for tiles
+const tileGroup = this.add.group({
+  classType: TileSprite,
+  maxSize: 500,
+  runChildUpdate: true,
+});
+
+// ✅ Scene transition with data
+this.scene.start("GameScene", { playerCount: 10, mapSize: 64 });
+
+// ✅ Clean input cleanup
+shutdown() {
+  this.input.off("pointerdown");
+  this.events.off("update");
+}
+```
+
+## Don't Reinvent
+- Use `Phaser.Math` for vectors, interpolation, random — don't write your own
+- Use `Phaser.Tilemaps` for grid-based maps
+- Use `Phaser.Tweens` for animations, not manual lerping
+- Use `Phaser.Time.TimerEvent` for delays, not `setTimeout`

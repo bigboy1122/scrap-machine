@@ -1,0 +1,47 @@
+---
+description: OWASP, NIST, GDPR, and CCPA security and privacy compliance
+alwaysApply: true
+---
+
+# Security & Privacy Compliance
+
+## OWASP Top 10 (Web Game Context)
+- **Injection**: Sanitize all player input (chat, names, custom data) before processing or rendering. Never use `eval()` or `innerHTML` with user data.
+- **Broken Auth**: Use secure session tokens, not predictable IDs. Validate sessions server-side.
+- **Sensitive Data Exposure**: Never log PII, passwords, tokens, or session IDs. Never send secrets to the client.
+- **XSS**: Escape all user-generated content rendered in DOM. Phaser canvas rendering is inherently safer but UI overlays are vulnerable.
+- **CSRF**: Use anti-CSRF tokens on any state-changing HTTP endpoints.
+- **Insecure Dependencies**: Run `npm audit` before each release. No known critical vulnerabilities in production.
+
+## NIST 800-63 / 800-53 (Applicable Controls)
+- Use HTTPS for all network communication (WebSocket over WSS, not WS)
+- Implement rate limiting on server endpoints to prevent abuse
+- Log security-relevant events (auth attempts, permission changes) with timestamps
+- Enforce least privilege — clients can only send actions they're allowed to perform
+
+## GDPR (EU) Requirements
+- **Lawful basis**: Only collect data necessary for gameplay. Document the basis.
+- **Data minimization**: Don't store what you don't need. No analytics without consent.
+- **Right to erasure**: Players must be able to delete their data.
+- **Consent**: Cookie/tracking consent required before any non-essential storage.
+- **Privacy policy**: Must be accessible from the game UI.
+
+## CCPA (California) Requirements
+- **Right to know**: Disclose what data is collected and why.
+- **Right to delete**: Honor deletion requests within 45 days.
+- **Right to opt-out**: Provide opt-out for data selling (if applicable).
+- **No discrimination**: Don't degrade the game experience for users who exercise rights.
+
+## Implementation Rules
+```typescript
+// ❌ BAD — logging PII
+logger.info("Player joined", { email: player.email, ip: req.ip });
+
+// ✅ GOOD — log only non-PII identifiers
+logger.info("Player joined", { playerId: player.id, roomId: room.id });
+```
+
+- Never store plaintext credentials
+- Validate and sanitize all WebSocket messages server-side
+- Use Content-Security-Policy headers in production builds
+- All third-party scripts require review and documentation

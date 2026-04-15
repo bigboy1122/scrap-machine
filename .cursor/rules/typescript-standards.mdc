@@ -1,0 +1,61 @@
+---
+description: TypeScript coding conventions for this project
+globs: "**/*.ts"
+alwaysApply: false
+---
+
+# TypeScript Standards
+
+## Strict Mode
+`tsconfig.json` has `strict: true`. Never disable it. No escape hatches:
+- No `// @ts-ignore` without a linked issue explaining why
+- No `as any` — use `unknown` and narrow with type guards
+- No non-null assertions (`!`) unless the invariant is documented
+
+## Types
+- Export types/interfaces from the module that owns the concept
+- Prefer `interface` for object shapes, `type` for unions/intersections
+- Use discriminated unions for state machines and message types
+
+```typescript
+// ✅ Discriminated union for game actions
+type GameAction =
+  | { type: "claim_tile"; tileId: string }
+  | { type: "upgrade"; stat: "attack" | "defense" | "growth" }
+  | { type: "steer"; direction: Phaser.Math.Vector2 };
+```
+
+## Imports
+- Use named imports: `import { Scene } from "phaser"`
+- Use path aliases: `import { logger } from "@/utils/logger"`
+- Group imports: external → internal → types (separated by blank lines)
+
+```typescript
+import { Scene } from "phaser";
+
+import { logger } from "@/utils/logger";
+import { TileGrid } from "@/entities/TileGrid";
+
+import type { GameAction } from "@/types";
+```
+
+## Enums
+- Prefer `as const` objects over TypeScript `enum`:
+
+```typescript
+// ✅ GOOD
+const TileState = { NEUTRAL: "neutral", OWNED: "owned", CONTESTED: "contested" } as const;
+type TileState = typeof TileState[keyof typeof TileState];
+
+// ❌ AVOID
+enum TileState { NEUTRAL, OWNED, CONTESTED }
+```
+
+## Null Handling
+- Use `null` for intentional absence, `undefined` for unset/optional
+- Always handle both in function inputs from external sources
+- Use optional chaining (`?.`) and nullish coalescing (`??`) over manual checks
+
+## Async
+- Always use `async/await` over raw Promises
+- Never fire-and-forget async calls — handle errors or use `void` operator with logging
