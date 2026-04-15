@@ -12,7 +12,7 @@ export default defineConfig({
     assetsInlineLimit: 0,
   },
   server: {
-    port: 3000,
-    open: true,
+    port: 5173,
+    open: false,
   },
 });
