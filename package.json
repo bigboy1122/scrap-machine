@@ -1,0 +1,27 @@
+{
+  "name": "scrap-machine",
+  "version": "0.1.0",
+  "description": "Multiplayer clicker/strategy game for Gamedev.js Jam 2026 — theme: Machines",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bigboy1122/scrap-machine.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bigboy1122/scrap-machine/issues"
+  },
+  "homepage": "https://github.com/bigboy1122/scrap-machine#readme",
+  "dependencies": {
+    "phaser": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8"
+  }
+}
