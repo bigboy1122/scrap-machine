@@ -120,16 +120,50 @@ Full integration with Wavedash SDK — lobbies, P2P networking, chat, player ide
 - Host migration: what happens when the host disconnects mid-game?
 - How to handle reconnection for dropped peers?
 
+## Implementation Progress
+
+### Completed
+| # | Work | Commit |
+|---|------|--------|
+| 1 | GitHub repo + project structure | `8307735` |
+| 2 | Cursor rules, skills, hooks | `a771948` |
+| 3 | Lock multiplayer stack (Wavedash P2P) | `9d308b7` |
+| 4 | Specs: tile grid + resource management | `0a07c05` |
+| 5 | **Core gameplay loop** — hex grid, click-to-grow, scrap economy, AI bots | `155fff4` |
+| 6 | Camera fix — full grid visible at startup | `99a1dfd` |
+
+### Current State (as of commit `99a1dfd`)
+The game boots, transitions to a 32×22 hex grid, and runs the core loop:
+- **Player 0 (orange)** — local player, click frontier tiles to claim them. Costs scrap.
+- **Players 1–2 (green, blue)** — AI bots that randomly expand every ~1.4s
+- **HUD** — scrap balance, income rate (+N/s), ATK/DEF levels
+- **Upgrades** — press `1` for attack, `2` for defense
+- **Camera** — starts centered on full grid; arrow keys + right-click drag to pan
+- **97 unit tests passing**, 0 lint errors
+
+### Key Files
+```
+src/grid/        hex-math.ts, grid-model.ts, grid-renderer.ts,
+                 input-handler.ts, spawn-manager.ts, types.ts
+src/resources/   resource-engine.ts, tick-engine.ts, resource-hud.ts
+src/scenes/      BootScene.ts, GridScene.ts
+specs/           tile-grid.md (#5), resource-management.md (#6)
+```
+
+### Phaser Version
+Installed: **Phaser 4.0.0** (not 3). Named imports only — no global `Phaser` namespace.
+Use `import { Scene, Input, GameObjects } from 'phaser'`.
+
 ## Next Steps
 
 1. ~~Create GitHub repo and set up project structure~~ ✅
 2. ~~Decide on AI IDE and build out agents/rules/skills/commands~~ ✅
 3. ~~Lock in multiplayer stack~~ ✅
-4. Write spec for the tile grid and click-to-grow mechanic
-5. Prototype core loop: grid → claim tiles → resource income → upgrades
-6. Integrate Wavedash SDK — lobbies, P2P networking
-7. Write spec for border conflict and absorption
-8. Implement border conflict and stalemate logic
+4. ~~Write spec for the tile grid and click-to-grow mechanic~~ ✅
+5. ~~Prototype core loop: grid → claim tiles → resource income → upgrades~~ ✅
+6. **Write spec for border conflict and absorption** ← NEXT
+7. Implement border conflict and stalemate logic
+8. Integrate Wavedash SDK — lobbies, P2P networking
 9. Add visual polish (procedural tiles, AI sprites, particle effects)
 10. Deploy to Wavedash and Itch.io
 11. Playtest and iterate on balance (growth vs. defense vs. aggression)
