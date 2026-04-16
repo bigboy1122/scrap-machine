@@ -132,20 +132,17 @@ export class GridScene extends Scene {
   }
 
   private setupCamera(): void {
-    this.cameras.main.setBounds(
-      -100,
-      -100,
-      this.scale.width + 200,
-      this.scale.height + 200,
-    );
+    // The grid is sized to fit within the 1280×720 viewport.
+    // Center the camera on the grid center so the full map is visible at startup.
+    // No setBounds — allows free panning with arrow keys/right-click drag.
+    const gridPixelW = DEFAULT_GRID_CONFIG.cols * DEFAULT_GRID_CONFIG.tileRadius * 1.5;
+    const gridPixelH =
+      DEFAULT_GRID_CONFIG.rows * DEFAULT_GRID_CONFIG.tileRadius * Math.sqrt(3);
 
-    // Center camera on local player's territory
-    const playerTiles = this.gridModel.getTerritory(LOCAL_PLAYER);
-    if (playerTiles.length > 0) {
-      const centerTile = playerTiles[Math.floor(playerTiles.length / 2)];
-      const { x, y } = hexToPixel(centerTile.coord, DEFAULT_GRID_CONFIG.tileRadius);
-      this.cameras.main.centerOn(x + this.gridOffsetX, y + this.gridOffsetY);
-    }
+    this.cameras.main.centerOn(
+      this.gridOffsetX + gridPixelW / 2,
+      this.gridOffsetY + gridPixelH / 2,
+    );
 
     // Right-click drag to pan
     this.input.on('pointerdown', (pointer: Input.Pointer) => {
