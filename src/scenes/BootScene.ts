@@ -5,7 +5,7 @@ export class BootScene extends Scene {
     super({ key: "BootScene" });
   }
 
-  create() {
+  create(): void {
     const { width, height } = this.cameras.main;
 
     this.add
@@ -24,5 +24,17 @@ export class BootScene extends Scene {
         fontFamily: "monospace",
       })
       .setOrigin(0.5);
+
+    this.add
+      .text(width / 2, height / 2 + 70, "Loading world...", {
+        fontSize: "14px",
+        color: "#555",
+        fontFamily: "monospace",
+      })
+      .setOrigin(0.5);
+
+    this.time.delayedCall(1500, () => {
+      this.scene.start("GridScene");
+    });
   }
 }
