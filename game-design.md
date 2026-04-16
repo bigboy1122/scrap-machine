@@ -2,7 +2,7 @@
 
 ## Overview
 
-Scrap Machine is a multiplayer clicker/strategy game built for the Gamedev.js Jam 2026 (theme: "Machines"). Players share a "petri dish" world with 10–20 participants, each controlling a small factory or machine in a scrapyard setting. The goal is to grow your machine by collecting scrap tiles, expanding territory, and absorbing opponents — not eliminating them.
+Scrap Machine is a multiplayer clicker/strategy game built for the Gamedev.js Jam 2026 (theme: "Machines"). Players share a "petri dish" world with 6–8 participants, each controlling a small factory or machine in a scrapyard setting. The goal is to grow your machine by collecting scrap tiles, expanding territory, and absorbing opponents — not eliminating them.
 
 ## Core Concept
 
@@ -71,80 +71,65 @@ The game is set in a scrapyard. Players control tank-like machines with magnets 
 - AI agents work best with **well-documented, code-first frameworks** with large training footprints.
 - Visual editors (Godot, Cocos Creator) lose their advantage without a human sitting in the GUI.
 - **Phaser** is the strongest fit: pure JavaScript/TypeScript, extensive docs, massive community, and it unlocks the Build it with Phaser challenge (~$5,500 in prizes).
-- For multiplayer networking, **Colyseus** or a lightweight WebSocket server pairs well with Phaser.
 
-## Technical Considerations
+## Technical Decisions (Resolved)
 
-### Engine
-- **Phaser** (v3) — HTML5 game framework, code-first, excellent docs, jam sponsor with dedicated challenge track.
+### Engine: Phaser 3
+HTML5 game framework, code-first, excellent docs, jam sponsor with dedicated challenge track.
 
-### Multiplayer Stack
-- TBD — options include Colyseus, custom WebSocket server, or Supabase Realtime for lighter-weight state sync.
+### IDE: Cursor
+Built-in Claude/GPT agents, MCP support, rules/skills system. All project tooling built for Cursor (7 rules, 9 skills, 4 hooks).
+
+### Multiplayer: Wavedash P2P (Host-Authoritative)
+- **Wavedash WebRTC P2P** networking — one peer acts as authoritative host
+- Lobby host runs game state logic client-side, validates actions, broadcasts state
+- Other clients send actions to host via P2P channels
+- **Player cap: 6–8** (WebRTC mesh degrades past ~10 peers)
+- Zero server infrastructure — no hosting cost, no deploy complexity
+- Built-in lobbies (public/private/invite link), chat, invites, NAT traversal
+
+**P2P Channel Plan:**
+
+| Channel | Use | Reliable |
+|---------|-----|----------|
+| 0 | Game state broadcasts (host → all) | Yes |
+| 1 | Player actions (client → host) | Yes |
+| 2 | Chat messages | Yes |
+| 3 | Position/animation hints | No |
+
+### Wavedash Integration: Deep
+Full integration with Wavedash SDK — lobbies, P2P networking, chat, player identity. Primary multiplayer backend. Qualifies for Deploy to Wavedash challenge ($2,500 prize pool). Judges are Wavedash founders — deep integration should score well.
+
+### Art Style: Hybrid
+- **Tiles:** Procedural geometric with noise textures (rust/metal tints), Phaser graphics API
+- **Machines & UI:** AI-generated sprites via `generate-sprite` skill (64x64 tiles, 128x128 machines)
+- **Effects:** Particle emitters for sparks, smoke, magnetic fields
+- **Palette:** Rust oranges, steel grays, dark browns, teal/cyan accents, spark yellows
 
 ### Target Platform
 - Web browser (HTML5) — required for Gamedev.js Jam submission.
 
 ### Deployment Targets
-- **Itch.io** — primary submission platform (required)
-- **Wavedash** — secondary deployment for the Deploy to Wavedash challenge ($2,500 prize pool)
+- **Wavedash** — primary deployment (multiplayer backend + challenge entry)
+- **Itch.io** — jam submission platform (required)
 - **GitHub** — public repo for the Open Source challenge
-
-## Decisions To Make
-
-### DECIDE: AI IDE & Tooling Environment
-Which AI-assisted IDE will the team standardize on? This choice determines what agents, rules, skills, and commands we build.
-
-**Options:**
-- **Cursor** — built-in Claude/GPT agents, MCP support, rules/skills system, good for TypeScript
-- **Windsurf** — Codeium-backed, similar agent capabilities
-- **Claude Code (CLI)** — terminal-based, CLAUDE.md rules, lightweight
-- **VS Code + Copilot** — familiar, but weaker agent orchestration
-
-**What we need to build for the chosen IDE:**
-- **Agents** — specialized subagents for game logic, art generation, testing, deployment
-- **Rules** — project conventions, coding standards, Phaser patterns, file structure
-- **Skills** — reusable capabilities (deploy to Wavedash, deploy to Itch.io, run Phaser dev server, etc.)
-- **Commands** — shortcuts for common workflows (build, test, deploy, create spec)
-
-### DECIDE: Wavedash Integration Depth
-Deploy to Wavedash for the challenge ($2,500 prize pool). How deep do we integrate?
-
-**Options:**
-- **Minimal** — just deploy the same HTML5 build, no SDK. Meets challenge requirements.
-- **Light SDK** — add leaderboards and/or achievements via Wavedash SDK for polish.
-- **Deep integration** — use Wavedash multiplayer (lobbies, P2P networking) as our multiplayer backend.
-
-**Considerations:**
-- Wavedash has built-in multiplayer (lobbies, chat, invites, P2P) which could replace Colyseus entirely
-- Deep integration risks coupling us to their platform
-- Minimal deployment is ~30 minutes of work and still qualifies for the challenge
-
-### DECIDE: Multiplayer Architecture
-- **Colyseus** — purpose-built game server, authoritative state, rooms, lobby system
-- **Wavedash Multiplayer** — built-in P2P networking, lobbies, would count toward their challenge
-- **Custom WebSocket server** — maximum control, more work
-- **Supabase Realtime** — lighter weight, already have MCP access, but not designed for games
-
-### DECIDE: Art Style
-- **Procedural/generated** — AI agents can produce these without external assets
-- **Simple sprite sheets** — faster to iterate, AI can generate via image tools
-- **Minimal geometric** — colored tiles/shapes, no art dependency, ship fastest
 
 ## Open Questions
 
 - Movement mechanics: defer entirely or attempt a basic version during the jam?
-- How many simultaneous players can the design support before performance degrades?
-- How do we handle player sessions/reconnection in a 10–20 player lobby?
+- Host migration: what happens when the host disconnects mid-game?
+- How to handle reconnection for dropped peers?
 
 ## Next Steps
 
-1. **Create GitHub repo** and set up project structure
-2. **Decide on AI IDE** and build out agents/rules/skills/commands for the team
-3. Lock in multiplayer stack
+1. ~~Create GitHub repo and set up project structure~~ ✅
+2. ~~Decide on AI IDE and build out agents/rules/skills/commands~~ ✅
+3. ~~Lock in multiplayer stack~~ ✅
 4. Write spec for the tile grid and click-to-grow mechanic
 5. Prototype core loop: grid → claim tiles → resource income → upgrades
-6. Write spec for border conflict and absorption
-7. Implement border conflict and stalemate logic
-8. Add visual polish (scrapyard theme, particle effects, UI)
-9. Deploy to Itch.io, Wavedash, and push to public GitHub repo
-10. Playtest and iterate on balance (growth vs. defense vs. aggression)
+6. Integrate Wavedash SDK — lobbies, P2P networking
+7. Write spec for border conflict and absorption
+8. Implement border conflict and stalemate logic
+9. Add visual polish (procedural tiles, AI sprites, particle effects)
+10. Deploy to Wavedash and Itch.io
+11. Playtest and iterate on balance (growth vs. defense vs. aggression)
